@@ -25,6 +25,9 @@ CLOUD_PASS="${5}"
 DB_NAME=wp${USERNAME}
 BACKUP_NAME=${USERNAME}
 
+echo "[INFO] Installing mega-cmd"
+wget https://mega.nz/linux/repo/xUbuntu_22.04/amd64/megacmd-xUbuntu_22.04_amd64.deb && apt install "$PWD/megacmd-xUbuntu_22.04_amd64.deb"
+
 echo "[INFO] Installing Script "
 mkdir -p ${PARENTDIR}/${USERNAME}/bin
 
