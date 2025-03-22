@@ -11,10 +11,10 @@ BACKUP_HOURLY=$(date +%A%H00 | tr '[:upper:]' '[:lower:]')
 mkdir -p ${BACKUP_FOLDER}
 WHOS=$(mega-whoami | grep -o "err")
 if [ "$WHOS" != "err" ]; then
-    mega-sync ${BACKUP_FOLDER} backup-ohginiye
+    mega-sync ${BACKUP_FOLDER} "%CLOUD_FOLDER%"
 else
-    . /root/bin/connect-mega.sh
-    mega-sync ${BACKUP_FOLDER} backup-ohginiye
+    . ~/bin/connect-mega.sh
+    mega-sync ${BACKUP_FOLDER} "%CLOUD_FOLDER%"
 fi
 
 rm -f $(ls $(date -d "1 month ago" +fs-wp-%Y-%m-*)--* 2>/dev/null) $(ls $(date -d "1 month ago" +db-wp-%Y-%m-*)--* 2>/dev/null)
@@ -22,10 +22,10 @@ rm -f $(ls $(date -d "1 month ago" +fs-wp-%Y-%m-*)--* 2>/dev/null) $(ls $(date -
 START_TIME=$(date +%s)
 # running backup
 echo "Starting Backup at $(date)"
-. /root/bin/backup
+. ~/bin/backup
 
 backupFS "${BACKUP_NAME}"
-backupDB "${BACKUP_NAME}" %DB_NAME%
+backupDB "${BACKUP_NAME}" "%DB_NAME%"
 
 echo "Finish Backup at $(date)"
 
