@@ -34,8 +34,8 @@ sed -i -e "s@%USERNAME%@${BACKUP_NAME}@g" \
        -e "s@%CLOUD_FOLDER%@${CLOUD_FOLDER}@g" \
        "${dirName}/bin/backupService"
 
-sed -i -e "s@%MEGA_MAIL%@${CLOUD_MAIL}@g" \
-       -e "s@%MEGA_PASS%@${CLOUD_PASS}@g" \
+sed -i -e "s|%MEGA_MAIL%|${CLOUD_MAIL}|g" \
+       -e "s|%MEGA_PASS%|${CLOUD_PASS}|g" \
        "${dirName}/bin/connect-mega.sh"
 
 cp ${dirName}/bin/* ${PARENTDIR}/${USERNAME}/bin

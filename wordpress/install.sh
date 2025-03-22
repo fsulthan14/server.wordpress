@@ -25,8 +25,16 @@ DB_NAME="wp${USERNAME}"
 DB_USERNAME="wpdb${USERNAME}"
 
 echo "[INFO] Installing Dependencies.."
-apt update && upgrade -y 
-apt install php-imagick php-fpm php-curl php-gd php-intl php-mbstring php-soap php-xml php-zip php-mysqli php-comm php-bcmath apt-transport-https curl nginx -y
+apt update && apt upgrade -y
+DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common
+apt update
+DEBIAN_FRONTEND=noninteractive apt install -y php8.1-mysql php8.1-imagick php8.1-fpm php8.1-curl php8.1-gd php8.1-intl \
+            php8.1-mbstring php8.1-soap php8.1-xml php8.1-zip php8.1-bcmath \
+            apt-transport-https curl nginx iputils-ping unzip
+echo "[INFO] Setup Default PHP"
+update-alternatives --set php /usr/bin/php8.1
+php -v
+systemctl restart php8.1-fpm nginx
 echo "[INFO] Done"
 
 echo "[INFO] Create Database & User for Wordpress.."
@@ -60,7 +68,7 @@ curl -LO https://wordpress.org/latest.tar.gz
 tar xzvf latest.tar.gz
 mv /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.php
 cp -a /tmp/wordpress/. ${PARENTDIR}/${USERNAME}/
-ln -sf ${PARENTDIR}/${USERNAME} /var/www/html/wp 
+ln -sf ${PARENTDIR}/${USERNAME} /var/www/html/wp
 
 echo "[INFO] Set up wordpress configuration.."
 sed -i -e "s/database_name_here/${DB_NAME}/g" \
