@@ -14,7 +14,7 @@ DB_USERNAME="wpdb"
 
 echo "[INFO] Installing Dependencies.."
 apt update && upgrade -y 
-apt install unzip php-fpm php-curl php-gd php-intl php-mbstring php-soap php-xml php-zip php-mysqli apt-transport-https curl -y
+apt install php-imagick php-fpm php-curl php-gd php-intl php-mbstring php-soap php-xml php-zip php-mysqli php-comm php-bcmath apt-transport-https curl -y
 echo "[INFO] Done"
 
 echo "[INFO] Create Database & User for Wordpress.."
@@ -49,7 +49,6 @@ tar xzvf latest.tar.gz
 mv /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.php
 cp -a /tmp/wordpress/. ${PARENTDIR}/${USERNAME}/
 ln -sf ${PARENTDIR}/${USERNAME} /var/www/html/wp 
-chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
 
 echo "[INFO] Set up wordpress configuration.."
 cd ${PARENTDIR}/${USERNAME}
@@ -62,3 +61,8 @@ sed -i -e "s/database_name_here/${DB_NAME}/g" \
 # Generate Salt
 sed -i '/AUTH_KEY/d; /SECURE_AUTH_KEY/d; /LOGGED_IN_KEY/d; /NONCE_KEY/d; /AUTH_SALT/d; /SECURE_AUTH_SALT/d; /LOGGED_IN_SALT/d; /NONCE_SALT/d' ${PARENTDIR}/${USERNAME}/wp-config.php
 curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> ${PARENTDIR}/${USERNAME}/wp-config.php
+
+chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
+chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
+
+echo "[INFO] Done"
