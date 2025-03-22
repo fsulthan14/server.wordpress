@@ -9,7 +9,7 @@ fi
 dirName=$(dirName "${0}")
 PARENTDIR="/opt"
 USERNAME="${1}"
-DB_NAME="wordpress-${USERNAME}"
+DB_NAME="wp-${USERNAME}"
 DB_USERNAME="wpdb"
 
 echo "[INFO] Installing Dependencies.."
@@ -51,8 +51,6 @@ cp -a /tmp/wordpress/. ${PARENTDIR}/${USERNAME}/
 ln -sf ${PARENTDIR}/${USERNAME} /var/www/html/wp 
 
 echo "[INFO] Set up wordpress configuration.."
-cd ${PARENTDIR}/${USERNAME}
-
 sed -i -e "s/database_name_here/${DB_NAME}/g" \
        -e "s/username_here/${DB_USERNAME}/g" \
        -e "s/password_here/${DB_PASSWORD}/g" \
@@ -64,5 +62,10 @@ curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> ${PARENTDIR}/${USERNAM
 
 chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
 chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
+
+# Increasing File Size Upload
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 200M/g' /etc/php/8.1/fpm/php.ini
+sed -i 's/post_max_size = 8M/post_max_size = 200M/g' /etc/php/8.1/fpm/php.ini
+systemctl restart php8.1-fpm
 
 echo "[INFO] Done"
