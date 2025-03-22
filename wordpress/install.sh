@@ -5,27 +5,28 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-if [ "$#" -lt 2 ]; then
+if [ "$#" -lt 3 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <parent-dir> <username>"
+   echo "   ${0} <parent-dir> <username> <wp-url>"
    exit 1
 fi
 
 echo
-echo "[INFO] Exec ${0} ${1} ${2}"
+echo "[INFO] Exec ${0} ${1} ${2} ${3}"
 echo
 
 # Variables
 dirName=$(dirName "${0}")
 PARENTDIR="${1}"
 USERNAME="${2}"
+WP_URL="${3}"
 DB_NAME="wp${USERNAME}"
 DB_USERNAME="wpdb${USERNAME}"
 
 echo "[INFO] Installing Dependencies.."
 apt update && upgrade -y 
-apt install php-imagick php-fpm php-curl php-gd php-intl php-mbstring php-soap php-xml php-zip php-mysqli php-comm php-bcmath apt-transport-https curl -y
+apt install php-imagick php-fpm php-curl php-gd php-intl php-mbstring php-soap php-xml php-zip php-mysqli php-comm php-bcmath apt-transport-https curl nginx -y
 echo "[INFO] Done"
 
 echo "[INFO] Create Database & User for Wordpress.."
@@ -78,5 +79,11 @@ chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 200M/g' /etc/php/8.1/fpm/php.ini
 sed -i 's/post_max_size = 8M/post_max_size = 200M/g' /etc/php/8.1/fpm/php.ini
 systemctl restart php8.1-fpm
+echo "[INFO] Done"
 
+echo "[INFO] Set Up Nginx Configuration..."
+rm -rf /etc/nginx/sites-available /etc/nginx/sites-enabled
+sed -i "s/%ADDRESS%/${WP_URL}/g" ${dirName}/nginx.conf.template
+cp ${dirName}/nginx.conf.template /etc/nginx/sites-enabled/wordpress.conf
+systemctl reload nginx
 echo "[INFO] Done"
