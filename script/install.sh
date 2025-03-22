@@ -8,12 +8,12 @@ fi
 if [ "$#" -lt 3 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <parent-dir> <username> <cloud-backup-folder>"
+   echo "   ${0} <parent-dir> <username> <cloud-backup-folder> <cloud-email> <cloud-pass>"
    exit 1
 fi
 
 echo
-echo "[INFO] Exec ${0} ${1} ${2} ${3}"
+echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5}"
 echo
 
 dirName=$(dirname "$0")
