@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mega-logout
+rm -rf /tmp/backup

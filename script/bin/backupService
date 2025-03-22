@@ -1,0 +1,34 @@
+#!/bin/bash
+
+BACKUP_NAME=%USERNAME%
+SOURCE_FILES=('wp-content' 'wp-admin' 'wp-config.php')
+BACKUP_FOLDER=/tmp/backup
+SOURCE_FOLDER="%PARENTDIR%"
+
+BACKUP_HOURLY=$(date +%A%H00 | tr '[:upper:]' '[:lower:]')
+
+# clean old
+mkdir -p ${BACKUP_FOLDER}
+WHOS=$(mega-whoami | grep -o "err")
+if [ "$WHOS" != "err" ]; then
+    mega-sync ${BACKUP_FOLDER} backup-ohginiye
+else
+    . /root/bin/connect-mega.sh
+    mega-sync ${BACKUP_FOLDER} backup-ohginiye
+fi
+
+rm -f $(ls $(date -d "1 month ago" +fs-wp-%Y-%m-*)--* 2>/dev/null) $(ls $(date -d "1 month ago" +db-wp-%Y-%m-*)--* 2>/dev/null)
+
+START_TIME=$(date +%s)
+# running backup
+echo "Starting Backup at $(date)"
+. /root/bin/backup
+
+backupFS "${BACKUP_NAME}"
+backupDB "${BACKUP_NAME}" %DB_NAME%
+
+echo "Finish Backup at $(date)"
+
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+echo -e "$(date)\nBackup completed in ${DURATION} seconds.\nLatest FS is: fs-${BACKUP_NAME}-$(date +%Y-%m-%d--%H00).tar.gz\nLatest DB is: db-${BACKUP_NAME}-$(date +%Y-%m-%d--%H00).gz" > ${BACKUP_FOLDER}/${BACKUP_NAME}/latest_backup.txt

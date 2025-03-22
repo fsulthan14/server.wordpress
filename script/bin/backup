@@ -1,0 +1,42 @@
+#!/bin/bash
+
+initBackup() {
+    	local BACKUP_NAME="${1}"
+
+    	BACKUP_BASE="${BACKUP_FOLDER}/${BACKUP_NAME}"
+    	mkdir -p ${BACKUP_BASE}
+}
+
+gzipBackup() {
+    	local BACKUP_NAME="${1}"
+
+    	local TIMESTAMP=$(date +%Y-%m-%d--%H00)
+    
+    	local TAR_GZ_NAME="${BACKUP_BASE}/fs-${BACKUP_NAME}-${TIMESTAMP}.tar.gz"
+
+	tar -czf ${TAR_GZ_NAME} -C ${SOURCE_FOLDER} "${SOURCE_FILES[@]}"
+}
+
+backupFS() {
+	local BACKUP_NAME="${1}"
+
+	initBackup ${BACKUP_NAME}
+
+	gzipBackup ${BACKUP_NAME}
+
+	rsync -aq --delete ${BACKUP_BASE}/fs-${BACKUP_NAME}-*.tar.gz ${BACKUP_FS_HOURLY}/
+}
+
+backupDB() {
+	local BACKUP_NAME=${1}
+    	local DB_NAME=${2}
+
+    	initBackup ${BACKUP_NAME}
+
+	local TIMESTAMP=$(date +%Y-%m-%d--%H00)
+
+ 	local BACKUP_DB_HOURLY=${BACKUP_BASE}/db-${BACKUP_NAME}-${TIMESTAMP}.gz
+    	
+    	mysqldump ${DB_NAME} | gzip > ${BACKUP_DB_HOURLY}
+}
+
