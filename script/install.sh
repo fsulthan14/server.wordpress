@@ -5,7 +5,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-if [ "$#" -lt 3 ]; then
+if [ "$#" -lt 5 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
    echo "   ${0} <parent-dir> <username> <cloud-backup-folder> <cloud-email> <cloud-pass>"

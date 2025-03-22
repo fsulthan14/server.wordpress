@@ -1,0 +1,2 @@
+%BACKUP_MINUTE% 07,19 * * * %PARENTDIR%/bin/backupService > /tmp/backup.log 2>&1
+%CLEAN_OLD% 07,19 * * * %PARENTDIR%/bin/cleanOldBackup > /tmp/del.log 2>&1
