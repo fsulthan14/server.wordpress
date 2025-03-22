@@ -5,12 +5,23 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+if [ "$#" -lt 2 ]; then
+   echo "[ERROR] Wrong number of arguments"
+   echo "Syntax is:"
+   echo "   ${0} <wp-dir> <username>"
+   exit 1
+fi
+
+echo
+echo "[INFO] Exec ${0} ${1} ${2}"
+echo
+
 # Variables
 dirName=$(dirName "${0}")
-PARENTDIR="/opt"
-USERNAME="${1}"
-DB_NAME="wp-${USERNAME}"
-DB_USERNAME="wpdb"
+PARENTDIR="${1}"
+USERNAME="${2}"
+DB_NAME="wp${USERNAME}"
+DB_USERNAME="wpdb${USERNAME}"
 
 echo "[INFO] Installing Dependencies.."
 apt update && upgrade -y 
