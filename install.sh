@@ -5,7 +5,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-if [ "$#" -lt 5 ]; then
+if [ "$#" -lt 6 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
    echo "   ${0} <parent-dir> <username> <wp-url> <cloud-backup-folder> <cloud-email> <cloud-pass>"
@@ -17,7 +17,7 @@ echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5} ${6}"
 echo
 
 # Global Variables
-dirName=$(dirName "${0}")
+dirName=$(dirname "${0}")
 PARENTDIR="${1}"
 USERNAME="${2}"
 WP_URL="${3}"

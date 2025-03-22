@@ -17,7 +17,7 @@ echo "[INFO] Exec ${0} ${1} ${2} ${3}"
 echo
 
 # Variables
-dirName=$(dirName "${0}")
+dirName=$(dirname "${0}")
 PARENTDIR="${1}"
 USERNAME="${2}"
 WP_URL="${3}"

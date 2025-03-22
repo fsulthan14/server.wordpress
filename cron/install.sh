@@ -16,7 +16,7 @@ echo
 echo "[INFO] Exec ${0} ${1} ${2}"
 echo
 
-dirName=$(dirName "${0}")
+dirName=$(dirname "${0}")
 PARENTDIR=${1}
 USERNAME=${2}
 BASE_TIME=$(hostname -I | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | cut -d'.' -f4)
