@@ -76,22 +76,18 @@ sed -i -e "s/database_name_here/${DB_NAME}/g" \
        -e "s/password_here/${DB_PASSWORD}/g" \
        "${PARENTDIR}/${USERNAME}/wp-config.php"
 
-# Generate Salt
-sed -i '/AUTH_KEY/d; /SECURE_AUTH_KEY/d; /LOGGED_IN_KEY/d; /NONCE_KEY/d; /AUTH_SALT/d; /SECURE_AUTH_SALT/d; /LOGGED_IN_SALT/d; /NONCE_SALT/d' ${PARENTDIR}/${USERNAME}/wp-config.php
-curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> ${PARENTDIR}/${USERNAME}/wp-config.php
-
 chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
 chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
 
 # Increasing File Size Upload
-sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 200M/g' /etc/php/8.1/fpm/php.ini
-sed -i 's/post_max_size = 8M/post_max_size = 200M/g' /etc/php/8.1/fpm/php.ini
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/g' /etc/php/8.1/fpm/php.ini
+sed -i 's/post_max_size = 8M/post_max_size = 256M/g' /etc/php/8.1/fpm/php.ini
 systemctl restart php8.1-fpm
 echo "[INFO] Done"
 
 echo "[INFO] Set Up Nginx Configuration..."
 rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
-sed -i "s/%ADDRESS%/${WP_URL}/g" ${dirName}/nginx.conf.template
-cp ${dirName}/nginx.conf.template /etc/nginx/sites-enabled/wordpress.conf
+sed -i "s/%ADDRESS%/${WP_URL}/g" /tmp/server.wordpress/wordpress/nginx.conf.template
+cp /tmp/server.wordpress/wordpress/nginx.conf.template /etc/nginx/sites-enabled/wordpress.conf
 systemctl reload nginx
 echo "[INFO] Done"
