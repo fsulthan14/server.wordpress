@@ -1,0 +1,2 @@
+#!/bin/bash
+/usr/bin/mariadb "${@/--login-path=local/--defaults-extra-file=~/.client.cnf}"
