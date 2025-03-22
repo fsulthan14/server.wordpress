@@ -31,6 +31,7 @@ apt update
 DEBIAN_FRONTEND=noninteractive apt install -y php8.1-mysql php8.1-imagick php8.1-fpm php8.1-curl php8.1-gd php8.1-intl \
             php8.1-mbstring php8.1-soap php8.1-xml php8.1-zip php8.1-bcmath \
             apt-transport-https curl nginx iputils-ping unzip
+
 echo "[INFO] Setup Default PHP"
 update-alternatives --set php /usr/bin/php8.1
 php -v
@@ -62,8 +63,15 @@ fi
 
 echo "[INFO] Done"
 
+echo "[INFO] Installing wp-cli"
+cd /tmp 
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+mv wp-cli.phar /usr/local/bin/wp
+wp cli update
+echo "[INFO] Done"
+
 echo "[INFO] Installing Wordpress.."
-cd /tmp
 curl -LO https://wordpress.org/latest.tar.gz
 tar xzvf latest.tar.gz
 mv /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.php
@@ -77,6 +85,8 @@ sed -i -e "s/database_name_here/${DB_NAME}/g" \
        "${PARENTDIR}/${USERNAME}/wp-config.php"
 
 chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
+sudo -u root wp core install --url=${WP_URL} --title="Ledig Studio" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${CLOUD_MAIL} --allow-root
+
 chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
 
 # Increasing File Size Upload
