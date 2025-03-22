@@ -8,7 +8,7 @@ fi
 if [ "$#" -lt 2 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <wp-dir> <username>"
+   echo "   ${0} <parent-dir> <username>"
    exit 1
 fi
 

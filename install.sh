@@ -35,3 +35,5 @@ ${dirName}/wordpress/install.sh ${PARENTDIR} ${USERNAME}
 ${dirName}/nginx/install.sh
 
 ${dirName}/script/install.sh ${PARENTDIR} ${USERNAME} ${CLOUD_FOLDER} ${CLOUD_MAIL} ${CLOUD_PASS}
+
+${dirName}/cron/install.sh ${PARENTDIR} ${USERNAME}

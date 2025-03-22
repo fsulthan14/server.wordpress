@@ -5,6 +5,17 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+if [ "$#" -lt 2 ]; then
+   echo "[ERROR] Wrong number of arguments"
+   echo "Syntax is:"
+   echo "   ${0} <parent-dir> <username>"
+   exit 1
+fi
+
+echo
+echo "[INFO] Exec ${0} ${1} ${2}"
+echo
+
 dirName=$(dirName "${0}")
 PARENTDIR=${1}
 USERNAME=${2}
