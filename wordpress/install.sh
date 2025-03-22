@@ -90,7 +90,7 @@ systemctl restart php8.1-fpm
 echo "[INFO] Done"
 
 echo "[INFO] Set Up Nginx Configuration..."
-rm -rf /etc/nginx/sites-available /etc/nginx/sites-enabled
+rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
 sed -i "s/%ADDRESS%/${WP_URL}/g" ${dirName}/nginx.conf.template
 cp ${dirName}/nginx.conf.template /etc/nginx/sites-enabled/wordpress.conf
 systemctl reload nginx
