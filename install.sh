@@ -22,10 +22,10 @@ PARENTDIR="${1}"
 USERNAME="${2}"
 WP_URL="${3}"
 SITE_NAME="${4}"
-CLOUD_FOLDER="${4}"
-CLOUD_MAIL="${5}"
-CLOUD_PASS="${6}"
-PHP_VERSION="${7:-8.2}"
+CLOUD_FOLDER="${5}"
+CLOUD_MAIL="${6}"
+CLOUD_PASS="${7}"
+PHP_VERSION="${8:-8.2}"
 
 # Execution Install
 
