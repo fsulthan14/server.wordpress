@@ -30,19 +30,20 @@ PHP_VERSION="${6:-8.2}"
 
 echo "[INFO] Installing Dependencies.."
 apt update && apt upgrade -y
-DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common
+DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common apt-transport-https curl nginx iputils-ping unzip
+echo "[INFO] Installing PHP ${PHP_VERSION} and required extensions..."
+add-apt-repository ppa:ondrej/php -y
 apt update
 DEBIAN_FRONTEND=noninteractive apt install -y \
-    php${PHP_VERSION}-mysql php${PHP_VERSION}-imagick php${PHP_VERSION}-fpm \
+    php${PHP_VERSION} php${PHP_VERSION}-mysql php${PHP_VERSION}-imagick php${PHP_VERSION}-fpm \
     php${PHP_VERSION}-curl php${PHP_VERSION}-gd php${PHP_VERSION}-intl \
     php${PHP_VERSION}-mbstring php${PHP_VERSION}-soap php${PHP_VERSION}-xml \
-    php${PHP_VERSION}-zip php${PHP_VERSION}-bcmath \
-    apt-transport-https curl nginx iputils-ping unzip
-
+    php${PHP_VERSION}-zip php${PHP_VERSION}-bcmath
 echo "[INFO] Setup Default PHP"
 update-alternatives --set php /usr/bin/php${PHP_VERSION}
 php -v
-systemctl restart php${PHP_VERSION}-fpm nginx
+systemctl restart php${PHP_VERSION}-fpm 
+systemctl restart nginx
 echo "[INFO] Done"
 
 echo "[INFO] Create Database & User for Wordpress.."
