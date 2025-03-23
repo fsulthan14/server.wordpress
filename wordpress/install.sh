@@ -8,12 +8,12 @@ fi
 if [ "$#" -lt 5 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> <admin-mail> [php-version default:8.2]"
+   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> <admin-mail> [multisite: true|false default:false] [multisite type: subdir|subdomain default:subdir] [php-version default:8.2]"
    exit 1
 fi
 
 echo
-echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5} ${6}"
+echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5} ${6} ${7} ${8}"
 echo
 
 # Variables
@@ -26,7 +26,9 @@ ADMIN_MAIL="${5}"
 ADMIN_PASS="$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 32 | head -n 1)"
 DB_NAME="wp${USERNAME}"
 DB_USERNAME="wpdb${USERNAME}"
-PHP_VERSION="${6:-8.2}"
+MULTISITE="${6:-false}"
+MULTISITE_TYPE="${7:-subdir}"
+PHP_VERSION="${8:-8.2}"
 
 echo "[INFO] Installing Dependencies.."
 apt update && apt upgrade -y
@@ -115,3 +117,20 @@ wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} 
 echo "wp username: ${USERNAME} pass: ${ADMIN_PASS}" > /var/local/admin.txt
 wp config shuffle-salts --path=${PARENTDIR}/${USERNAME} --allow-root
 echo "[INFO] Done"
+
+# Multisite Enabling
+if [ "${MULTISITE_TYPE}" == "subdomain" ]; then
+    SUB_TYPE="--skip-email --subdomains --allow-root"
+else
+    SUB_TYPE="--skip-email --allow-root"
+fi      
+
+if [ "${MULTISITE}" == "true" ]; then
+    echo "[INFO] Enabling Multisite with type: ${MULTISITE_TYPE}"
+    wp core multisite-install --url="${WP_URL}" --title="Network-${SITE_NAME}" \
+        --admin_user="${USERNAME}" --admin_password="${ADMIN_PASS}" \
+        --admin_email="${ADMIN_MAIL}" --path="${PARENTDIR}/${USERNAME}" \
+        ${SUB_TYPE}
+else    
+    echo "[INFO] Multisite not enabled"
+fi
