@@ -94,7 +94,7 @@ sed -i -e "s/database_name_here/${DB_NAME}/g" \
 
 chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
 chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
-wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${CLOUD_MAIL} --path=${PARENTDIR}/${USERNAME} --allow-root
+wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${ADMIN_MAIL} --path=${PARENTDIR}/${USERNAME} --allow-root
 echo "wp username: ${USERNAME} pass: ${ADMIN_PASS}" > /var/local/admin.txt
 
 # Increasing File Size Upload
