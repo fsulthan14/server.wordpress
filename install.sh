@@ -13,7 +13,7 @@ if [ "$#" -lt 7 ]; then
 fi
 
 echo
-echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5} ${6}"
+echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5} ${6} ${7} ${8} ${9} ${10}"
 echo
 
 # Global Variables
@@ -36,14 +36,15 @@ ${dirName}/mariadb/install.sh
 
 ${dirName}/mariadb-conf/install.sh
 
-${dirName}/wordpress/install.sh ${PARENTDIR} ${USERNAME} ${WP_URL} ${SITE_NAME} ${CLOUD_MAIL} ${PHP_VERSION}
+${dirName}/wordpress/install.sh ${PARENTDIR} ${USERNAME} ${WP_URL} ${SITE_NAME} ${CLOUD_MAIL} ${MULTISITE} ${MULTISITE_TYPE} ${PHP_VERSION}
 
 ${dirName}/script/install.sh ${PARENTDIR} ${USERNAME} ${CLOUD_FOLDER} ${CLOUD_MAIL} ${CLOUD_PASS}
 
 ${dirName}/cron/install.sh ${PARENTDIR} ${USERNAME}
 
-${dirName}/plugins/install.sh
+${dirName}/plugins/install.sh ${PARENTDIR} ${USERNAME}
 
-/usr/bin/shutdown -r now
+shutdown -r now
 sleep 60
+echo "[INFO] Wait 1 minutes the server is rebooting."
 echo "[INFO] Wordpress Installation Finished."
