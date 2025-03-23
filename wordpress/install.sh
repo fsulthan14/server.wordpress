@@ -103,12 +103,25 @@ sed -i 's/post_max_size = 8M/post_max_size = 256M/g' /etc/php/${PHP_VERSION}/fpm
 systemctl restart php${PHP_VERSION}-fpm
 echo "[INFO] Done"
 
+# Nginx Configuration
 echo "[INFO] Set Up Nginx Configuration..."
 rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
+
+VHOST_CONF=/tmp/server.wordpress/wordpress/nginx-conf/nginx.conf.template
+
+if [ "${MULTISITE}" == "true" ]; then
+    if [ "${MULTISITE_TYPE}" == "subdomain" ]; then
+        VHOST_CONF=/tmp/server.wordpress/wordpress/nginx-conf/nginx.subdomain.template
+    elif [ "${MULTISITE_TYPE}" == "subdir" ]; then
+        VHOST_CONF=/tmp/server.wordpress/wordpress/nginx-conf/nginx.subdir.template
+    fi
+fi
+
 sed -i -e "s/%ADDRESS%/${WP_URL}/g" \
        -e "s/%PHP_VERSION%/${PHP_VERSION}/g" \
-	"/tmp/server.wordpress/wordpress/nginx.conf.template"
-cp /tmp/server.wordpress/wordpress/nginx.conf.template /etc/nginx/sites-enabled/wordpress.conf
+	"${VHOST_CONF}"
+
+cp "${VHOST_CONF}" /etc/nginx/sites-enabled/wordpress.conf
 systemctl reload nginx
 echo "[INFO] Done"
 
@@ -134,3 +147,7 @@ if [ "${MULTISITE}" == "true" ]; then
 else    
     echo "[INFO] Multisite not enabled"
 fi
+
+echo "[INFO] Configure Elementor Wordpress Theme"
+wp theme install hello-elementor --path="${PARENTDIR}/${USERNAME}" --activate --allow-root
+echo "[INFO] Done"
