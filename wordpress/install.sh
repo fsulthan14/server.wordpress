@@ -5,15 +5,15 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-if [ "$#" -lt 4 ]; then
+if [ "$#" -lt 5 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> [php-version default:8.2]"
+   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> <admin-mail> [php-version default:8.2]"
    exit 1
 fi
 
 echo
-echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5}"
+echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5} ${6}"
 echo
 
 # Variables
@@ -22,9 +22,11 @@ PARENTDIR="${1}"
 USERNAME="${2}"
 WP_URL="${3}"
 SITE_NAME="${4}"
+ADMIN_MAIL="${5}"
+ADMIN_PASS="$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 32 | head -n 1)"
 DB_NAME="wp${USERNAME}"
 DB_USERNAME="wpdb${USERNAME}"
-PHP_VERSION="${5:-8.2}"
+PHP_VERSION="${6:-8.2}"
 
 echo "[INFO] Installing Dependencies.."
 apt update && apt upgrade -y
@@ -92,6 +94,7 @@ sed -i -e "s/database_name_here/${DB_NAME}/g" \
 chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
 chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
 wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${CLOUD_MAIL} --allow-root
+echo "wp username: ${USERNAME} pass: ${ADMIN_PASS}" > /var/local/admin.txt
 
 # Increasing File Size Upload
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/g' /etc/php/${PHP_VERSION}/fpm/php.ini

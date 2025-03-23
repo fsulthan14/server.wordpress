@@ -8,7 +8,7 @@ fi
 if [ "$#" -lt 7 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <parent-dir> <username> <wp-url> <cloud-backup-folder> <cloud-email> <cloud-pass>"
+   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> <cloud-backup-folder> <cloud-email> <cloud-pass> [php-version default:8.2]"
    exit 1
 fi
 
@@ -25,6 +25,7 @@ SITE_NAME="${4}"
 CLOUD_FOLDER="${4}"
 CLOUD_MAIL="${5}"
 CLOUD_PASS="${6}"
+PHP_VERSION="${7:-8.2}"
 
 # Execution Install
 
@@ -32,7 +33,7 @@ ${dirName}/mariadb/install.sh
 
 ${dirName}/mariadb-conf/install.sh
 
-${dirName}/wordpress/install.sh ${PARENTDIR} ${USERNAME} ${WP_URL}
+${dirName}/wordpress/install.sh ${PARENTDIR} ${USERNAME} ${WP_URL} ${SITE_NAME} ${CLOUD_MAIL} ${PHP_VERSION}
 
 ${dirName}/script/install.sh ${PARENTDIR} ${USERNAME} ${CLOUD_FOLDER} ${CLOUD_MAIL} ${CLOUD_PASS}
 
