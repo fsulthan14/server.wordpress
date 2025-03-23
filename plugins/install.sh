@@ -26,7 +26,7 @@ echo "[INFO] Installing plugins from ${PLUGIN_LIST}..."
 
 for PLUGIN in $(cat "${PLUGIN_LIST}"); do
     echo "[INFO] Installing plugin: ${PLUGIN}"
-    wp plugin install "${PLUGIN}" ----path=${PARENTDIR}/${USERNAME} --activate --allow-root
+    wp plugin install "${PLUGIN}" --path=${PARENTDIR}/${USERNAME} --activate --allow-root
 done
 
 echo "[INFO] All plugins installed successfully!"
