@@ -8,7 +8,7 @@ fi
 if [ "$#" -lt 7 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> <cloud-backup-folder> <cloud-email> <cloud-pass> [php-version default:8.2]"
+   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> <cloud-backup-folder> <cloud-email> <cloud-pass> [multisite: true|false default:false] [multisite type: subdir|subdomain default:subdir] [php-version default:8.2]"
    exit 1
 fi
 
@@ -25,7 +25,9 @@ SITE_NAME="${4}"
 CLOUD_FOLDER="${5}"
 CLOUD_MAIL="${6}"
 CLOUD_PASS="${7}"
-PHP_VERSION="${8:-8.2}"
+MULTISITE="${8:-false}"
+MULTISITE_TYPE="${9:-subdir}"
+PHP_VERSION="${10:-8.2}"
 
 # Execution Install
 echo "[INFO] Start Wordpress Installation.."
@@ -42,5 +44,6 @@ ${dirName}/cron/install.sh ${PARENTDIR} ${USERNAME}
 
 ${dirName}/plugins/install.sh
 
-shutdown -r now
+/usr/bin/shutdown -r now
+sleep 60
 echo "[INFO] Wordpress Installation Finished."
