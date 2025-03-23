@@ -94,8 +94,6 @@ sed -i -e "s/database_name_here/${DB_NAME}/g" \
 
 chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
 chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
-wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${ADMIN_MAIL} --path=${PARENTDIR}/${USERNAME} --allow-root
-echo "wp username: ${USERNAME} pass: ${ADMIN_PASS}" > /var/local/admin.txt
 
 # Increasing File Size Upload
 sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/g' /etc/php/${PHP_VERSION}/fpm/php.ini
@@ -108,4 +106,9 @@ rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
 sed -i "s/%ADDRESS%/${WP_URL}/g" /tmp/server.wordpress/wordpress/nginx.conf.template
 cp /tmp/server.wordpress/wordpress/nginx.conf.template /etc/nginx/sites-enabled/wordpress.conf
 systemctl reload nginx
+echo "[INFO] Done"
+
+echo "[INFO] Configure Wordpress Site"
+wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${ADMIN_MAIL} --path=${PARENTDIR}/${USERNAME} --allow-root
+echo "wp username: ${USERNAME} pass: ${ADMIN_PASS}" > /var/local/admin.txt
 echo "[INFO] Done"
