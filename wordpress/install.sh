@@ -5,15 +5,15 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-if [ "$#" -lt 3 ]; then
+if [ "$#" -lt 4 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
-   echo "   ${0} <parent-dir> <username> <wp-url>"
+   echo "   ${0} <parent-dir> <username> <wp-url> <website-name> [php-version default:8.2]"
    exit 1
 fi
 
 echo
-echo "[INFO] Exec ${0} ${1} ${2} ${3}"
+echo "[INFO] Exec ${0} ${1} ${2} ${3} ${4} ${5}"
 echo
 
 # Variables
@@ -21,21 +21,26 @@ dirName=$(dirname "${0}")
 PARENTDIR="${1}"
 USERNAME="${2}"
 WP_URL="${3}"
+SITE_NAME="${4}"
 DB_NAME="wp${USERNAME}"
 DB_USERNAME="wpdb${USERNAME}"
+PHP_VERSION="${5:-8.2}"
 
 echo "[INFO] Installing Dependencies.."
 apt update && apt upgrade -y
 DEBIAN_FRONTEND=noninteractive apt install -y software-properties-common
 apt update
-DEBIAN_FRONTEND=noninteractive apt install -y php8.1-mysql php8.1-imagick php8.1-fpm php8.1-curl php8.1-gd php8.1-intl \
-            php8.1-mbstring php8.1-soap php8.1-xml php8.1-zip php8.1-bcmath \
-            apt-transport-https curl nginx iputils-ping unzip
+DEBIAN_FRONTEND=noninteractive apt install -y \
+    php${PHP_VERSION}-mysql php${PHP_VERSION}-imagick php${PHP_VERSION}-fpm \
+    php${PHP_VERSION}-curl php${PHP_VERSION}-gd php${PHP_VERSION}-intl \
+    php${PHP_VERSION}-mbstring php${PHP_VERSION}-soap php${PHP_VERSION}-xml \
+    php${PHP_VERSION}-zip php${PHP_VERSION}-bcmath \
+    apt-transport-https curl nginx iputils-ping unzip
 
 echo "[INFO] Setup Default PHP"
-update-alternatives --set php /usr/bin/php8.1
+update-alternatives --set php /usr/bin/php${PHP_VERSION}
 php -v
-systemctl restart php8.1-fpm nginx
+systemctl restart php${PHP_VERSION}-fpm nginx
 echo "[INFO] Done"
 
 echo "[INFO] Create Database & User for Wordpress.."
@@ -85,14 +90,13 @@ sed -i -e "s/database_name_here/${DB_NAME}/g" \
        "${PARENTDIR}/${USERNAME}/wp-config.php"
 
 chmod 640 ${PARENTDIR}/${USERNAME}/wp-config.php
-sudo -u root wp core install --url=${WP_URL} --title="Ledig Studio" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${CLOUD_MAIL} --allow-root
-
 chown -R ${USERNAME}:www-data ${PARENTDIR}/${USERNAME} /var/www/html/wp
+wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${CLOUD_MAIL} --allow-root
 
 # Increasing File Size Upload
-sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/g' /etc/php/8.1/fpm/php.ini
-sed -i 's/post_max_size = 8M/post_max_size = 256M/g' /etc/php/8.1/fpm/php.ini
-systemctl restart php8.1-fpm
+sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 256M/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+sed -i 's/post_max_size = 8M/post_max_size = 256M/g' /etc/php/${PHP_VERSION}/fpm/php.ini
+systemctl restart php${PHP_VERSION}-fpm
 echo "[INFO] Done"
 
 echo "[INFO] Set Up Nginx Configuration..."

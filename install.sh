@@ -5,7 +5,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-if [ "$#" -lt 6 ]; then
+if [ "$#" -lt 7 ]; then
    echo "[ERROR] Wrong number of arguments"
    echo "Syntax is:"
    echo "   ${0} <parent-dir> <username> <wp-url> <cloud-backup-folder> <cloud-email> <cloud-pass>"
@@ -21,6 +21,7 @@ dirName=$(dirname "${0}")
 PARENTDIR="${1}"
 USERNAME="${2}"
 WP_URL="${3}"
+SITE_NAME="${4}"
 CLOUD_FOLDER="${4}"
 CLOUD_MAIL="${5}"
 CLOUD_PASS="${6}"
