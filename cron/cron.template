@@ -1,2 +1,3 @@
 %BACKUP_MINUTE% 07,19 * * * %PARENTDIR%/bin/backupService > /tmp/backup.log 2>&1
 %CLEAN_OLD% 07,19 * * * %PARENTDIR%/bin/cleanOldBackup > /tmp/del.log 2>&1
+0 0 1 */6 * wp config shuffle-salts > /tmp/salts.log 2>&1

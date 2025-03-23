@@ -28,6 +28,7 @@ CLOUD_PASS="${7}"
 PHP_VERSION="${8:-8.2}"
 
 # Execution Install
+echo "[INFO] Start Wordpress Installation.."
 
 ${dirName}/mariadb/install.sh
 
@@ -38,3 +39,8 @@ ${dirName}/wordpress/install.sh ${PARENTDIR} ${USERNAME} ${WP_URL} ${SITE_NAME} 
 ${dirName}/script/install.sh ${PARENTDIR} ${USERNAME} ${CLOUD_FOLDER} ${CLOUD_MAIL} ${CLOUD_PASS}
 
 ${dirName}/cron/install.sh ${PARENTDIR} ${USERNAME}
+
+${dirName}/plugins/install.sh
+
+shutdown -r now
+echo "[INFO] Wordpress Installation Finished."

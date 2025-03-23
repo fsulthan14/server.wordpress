@@ -103,7 +103,9 @@ echo "[INFO] Done"
 
 echo "[INFO] Set Up Nginx Configuration..."
 rm -rf /etc/nginx/sites-available/* /etc/nginx/sites-enabled/*
-sed -i "s/%ADDRESS%/${WP_URL}/g" /tmp/server.wordpress/wordpress/nginx.conf.template
+sed -i -e "s/%ADDRESS%/${WP_URL}/g" \
+       -e "s/%PHP_VERSION%/${PHP_VERSION}/g" \
+	"/tmp/server.wordpress/wordpress/nginx.conf.template"
 cp /tmp/server.wordpress/wordpress/nginx.conf.template /etc/nginx/sites-enabled/wordpress.conf
 systemctl reload nginx
 echo "[INFO] Done"
@@ -111,4 +113,5 @@ echo "[INFO] Done"
 echo "[INFO] Configure Wordpress Site"
 wp core install --url=${WP_URL} --title="${SITE_NAME}" --admin_user=${USERNAME} --admin_password=${ADMIN_PASS} --admin_email=${ADMIN_MAIL} --path=${PARENTDIR}/${USERNAME} --allow-root
 echo "wp username: ${USERNAME} pass: ${ADMIN_PASS}" > /var/local/admin.txt
+wp config shuffle-salts --path=${PARENTDIR}/${USERNAME} --allow-root
 echo "[INFO] Done"
